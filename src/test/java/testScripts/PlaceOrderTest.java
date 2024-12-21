@@ -6,25 +6,28 @@ import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
 import base.TestBase;
+import pages.CartPage;
+import pages.ChkoutPage;
 import pages.LoginPage;
 import pages.ProductListPage;
 
 public class PlaceOrderTest {
-	WebDriver driver;
-	LoginPage loginpage;
-	ProductListPage listPage;
-	public PlaceOrderTest() {
-		TestBase.initDriver();
-		driver=TestBase.GetDriver();
-		loginpage=new LoginPage(driver);
-		listPage = new ProductListPage(driver);
-	}
-	
-	@BeforeTest
-	public void setUp() {
-		TestBase.openUrl("https://www.saucedemo.com/");
-		
-	}
+    WebDriver driver;
+    LoginPage loginpage;
+    ProductListPage listPage;
+    CartPage cartPage;
+    ChkoutPage checkoutPage;
+
+    @BeforeTest
+    public void setUp() {
+        TestBase.initDriver();
+        driver = TestBase.GetDriver();
+        loginpage = new LoginPage(driver);
+        listPage = new ProductListPage(driver);
+        cartPage = new CartPage(driver);
+        checkoutPage = new ChkoutPage(driver);
+        TestBase.openUrl("https://www.saucedemo.com/");
+    }
 	
 	@Test(priority = 1)
 	public void loginTest() {
@@ -37,5 +40,15 @@ public class PlaceOrderTest {
 		Assert.assertTrue(isOnProductPage);
 		listPage.addtoCart();
 		listPage.viewCart();
+	}
+	
+	@Test(priority = 3)
+	public void checkoutTest() {
+		cartPage.checkoutItems();
+		checkoutPage.provideDeatils("Test","User", "223434");
+		checkoutPage.checkoutOrder();
+		Assert.assertTrue(checkoutPage.isOrderSuccess());
+		
+		
 	}
 }
